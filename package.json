@@ -1,0 +1,11 @@
+{
+    "name": "node-mvph",
+    "description": "a node.js app for serving headshots of members of the turkish parliament, past and present",
+    "version": "0.0.0",
+    "private": true,
+    "author": {
+        "name": "Ahmet Kizilay",
+        "url": "https://github.com/artsince"
+    },
+    "license": "MIT"
+}
