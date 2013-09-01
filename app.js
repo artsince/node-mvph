@@ -3,6 +3,7 @@
     var api = require('./api');
     var application_root = __dirname;
     var path = require('path');
+    var mongoose = require('mongoose');
     var app = express(); 
 
     app.configure(function () {
@@ -10,6 +11,7 @@
         app.use(express.methodOverride());
         app.use(app.router);
         app.use(express.static(application_root + '/public'));
+        mongoose.connect('mongodb://localhost/mvph-dev');
     });
 
     app.get('/random', api.random);

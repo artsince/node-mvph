@@ -1,5 +1,7 @@
 var http = require('http');
 var fs = require('fs');
+var mongoose = require('mongoose');
+var Member = require('./models/Member')(mongoose);
 
 var sendDefaultImage = function (res) {
     var filePath = './public/img/no-img.jpg';
@@ -38,6 +40,11 @@ var downloadImage = function (id, res) {
         var req = http.request(httpGetOptions, function (tbmmRes) {
             if(tbmmRes.statusCode !== 200) {
                 sendDefaultImage(res);
+                
+                if(tbmmRes.statusCode === 404) {
+                    Member.addMemberWithoutPhoto(id);
+                }
+
                 return;
             }
 
@@ -56,6 +63,8 @@ var downloadImage = function (id, res) {
             tbmmRes.on('end', function () {
                 res.contentType = tbmmResContentType;
                 res.send(imgBuffer);
+
+                Member.addMemberWithPhoto(id, imgBuffer);
             });
         });
 
@@ -70,7 +79,25 @@ var downloadImage = function (id, res) {
 
 exports.random = function (req, res) {
    var id = 1 + Math.floor(Math.random() * 6000);
-   downloadImage(id, res, true);
+
+   Member.retrievePhoto(id, function (err, status, img) {
+        if(err) {
+            res.status(500).send();
+            return;
+        }
+
+        switch(status) {
+            case Member.Status.NotFound:
+                downloadImage(id, res);
+                break;
+            case Member.Status.MissingPhoto:
+                exports.random(req, res); // recursive!
+                break;
+            case Member.Status.NoProblem:
+                res.status(200).send(img);
+                break;
+        }
+    });
 };
 
 exports.getMP = function (req, res) {
@@ -80,5 +107,22 @@ exports.getMP = function (req, res) {
         return;
     }
 
-    downloadImage(id, res);
+    Member.retrievePhoto(id, function (err, status, img) {
+        if(err) {
+            res.status(500).send();
+            return;
+        }
+
+        switch(status) {
+            case Member.Status.NotFound:
+                downloadImage(id, res);
+                break;
+            case Member.Status.MissingPhoto:
+                res.status(404).send();
+                break;
+            case Member.Status.NoProblem:
+                res.status(200).send(img);
+                break;
+        }
+    });
 };
