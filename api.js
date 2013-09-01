@@ -6,6 +6,8 @@ module.exports = function () {
     var mongoose = require('mongoose');
     var Member = require('./models/Member')(mongoose);
 
+    var MAX_MV = 6972;
+
     var _sendDefaultImage = function (res) {
         var filePath = './public/img/no-img.jpg';
         fs.stat(filePath, function (err, stats) {
@@ -81,7 +83,7 @@ module.exports = function () {
     };
 
     var _random = function (req, res) {
-       var id = 1 + Math.floor(Math.random() * 6971);
+       var id = 1 + Math.floor(Math.random() * (MAX_MV - 1));
 
        Member.retrievePhoto(id, function (err, status, img) {
             if(err) {
@@ -106,6 +108,11 @@ module.exports = function () {
     var _getMP = function (req, res) {
         var id = req.params.id || undefined;
         if(id === undefined) {
+            res.status(400).send();
+            return;
+        }
+
+        if(id < 1 || id > MAX_MV) {
             res.status(400).send();
             return;
         }
