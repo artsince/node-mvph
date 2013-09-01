@@ -9,7 +9,7 @@ module.exports = function () {
     var MAX_MV = 6972;
 
     var _sendDefaultImage = function (res) {
-        var filePath = './public/img/no-img.jpg';
+        var filePath = './public/img/tbmm.jpg';
         fs.stat(filePath, function (err, stats) {
             if(err) {
                 res.status(500).send();
