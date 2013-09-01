@@ -1,4 +1,31 @@
 var http = require('http');
+var fs = require('fs');
+
+var sendDefaultImage = function (res) {
+    var filePath = './public/img/no-img.jpg';
+    fs.stat(filePath, function (err, stats) {
+        if(err) {
+            res.status(500).send();
+            return;
+        }
+
+        fs.open(filePath, "r", function (err, fd) {
+            if(err) {
+                res.status(500).send();
+                return;
+            }
+
+            var imgBuffer = new Buffer(stats.size);
+
+            fs.read(fd, imgBuffer, 0, imgBuffer.length, null, function (err, bytesRead, imgBuffer) {
+                res.contentType = 'image/jpeg';
+                res.send(imgBuffer);
+
+                fs.close(fd);
+            });
+        });
+    });
+};
 
 var downloadImage = function (id, res) {
     var httpGetOptions = {
@@ -10,7 +37,7 @@ var downloadImage = function (id, res) {
 
         var req = http.request(httpGetOptions, function (tbmmRes) {
             if(tbmmRes.statusCode !== 200) {
-                res.status(404).send();
+                sendDefaultImage(res);
                 return;
             }
 
@@ -43,7 +70,7 @@ var downloadImage = function (id, res) {
 
 exports.random = function (req, res) {
    var id = 1 + Math.floor(Math.random() * 6000);
-   downloadImage(id, res);
+   downloadImage(id, res, true);
 };
 
 exports.getMP = function (req, res) {
