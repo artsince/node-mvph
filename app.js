@@ -4,7 +4,7 @@
     var application_root = __dirname;
     var path = require('path');
     var mongoose = require('mongoose');
-    var app = express(); 
+    var app = express();
 
     app.configure(function () {
         app.use(express.bodyParser());
