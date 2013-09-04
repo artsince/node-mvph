@@ -25,8 +25,11 @@ module.exports = function () {
                 var imgBuffer = new Buffer(stats.size);
 
                 fs.read(fd, imgBuffer, 0, imgBuffer.length, null, function (err, bytesRead, imgBuffer) {
-                    res.contentType = 'image/jpeg';
-                    res.send(imgBuffer);
+                    res.writeHead(200, {
+                        'Content-Type': 'image/jpeg',
+                        'Content-Length': imgBuffer.length
+                    });
+                    res.end(imgBuffer);
 
                     fs.close(fd);
                 });
@@ -66,8 +69,11 @@ module.exports = function () {
                 });
 
                 tbmmRes.on('end', function () {
-                    res.contentType = tbmmResContentType;
-                    res.send(imgBuffer);
+                    res.writeHead(200, {
+                        'Content-Type': tbmmResContentType,
+                        'Content-Length': imgBuffer.length
+                    });
+                    res.end(imgBuffer);
 
                     Member.addMemberWithPhoto(id, imgBuffer);
                 });
@@ -99,7 +105,11 @@ module.exports = function () {
                     _random(req, res); // recursive!
                     break;
                 case Member.Status.NoProblem:
-                    res.status(200).send(img);
+                    res.writeHead(200, {
+                        'Content-Type': 'image/jpeg',
+                        'Content-Length': img.length
+                    });
+                    res.end(img);
                     break;
             }
         });
@@ -131,7 +141,11 @@ module.exports = function () {
                     res.status(404).send();
                     break;
                 case Member.Status.NoProblem:
-                    res.status(200).send(img);
+                    res.writeHead(200, {
+                        'Content-Type': 'image/jpeg',
+                        'Content-Length': img.length
+                    });
+                    res.end(img);
                     break;
             }
         });
