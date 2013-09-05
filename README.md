@@ -15,7 +15,7 @@ All required external modules are alrady specified in package.json file. To inst
 npm install
 ```
 
-node-mvph uses MongoDB for storing data. The connection parameters for the database are kept under the config folder. Depending on the ```process.env.NODE_ENV``` value, the config parameters are retrieved from the the corresponding ```config.(env).js``` file. If no parameter is set, development is assumed.```config.heroku.js``` file is used on heroku, and filled out on deployment.
+node-mvph uses MongoDB for storing data. The connection parameters for the database are kept under the config folder. Depending on the ```process.env.NODE_ENV``` value, the config parameters are retrieved from the corresponding ```config.(env).js``` file. If no parameter is set, development is assumed.```config.heroku.js``` file is used on heroku, and filled out on deployment.
 
 ## Testing
 Hopefully automated tests will be added soon.
